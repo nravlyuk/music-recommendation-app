@@ -48,3 +48,5 @@ Thumbs.db
 
 # Python pycache:
 __pycache__/
+__pycache__/example.cpython-39.pyc
+__pycache__/app.cpython-39.pyc

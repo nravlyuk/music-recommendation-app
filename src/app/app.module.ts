@@ -10,9 +10,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './material/material.module';
 import { ExampleComponent } from './example/example.component';
 import { PlaylistsComponent } from './playlists/playlists.component';
+import { IgnoredComponent } from './ignored/ignored.component';
 
 @NgModule({
-  declarations: [AppComponent, ExampleComponent, PlaylistsComponent],
+  declarations: [AppComponent, ExampleComponent, PlaylistsComponent, IgnoredComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

@@ -11,9 +11,10 @@ import { MaterialModule } from './material/material.module';
 import { ExampleComponent } from './example/example.component';
 import { PlaylistsComponent } from './playlists/playlists.component';
 import { IgnoredComponent } from './ignored/ignored.component';
+import { RecommendedComponent } from './recommended/recommended.component';
 
 @NgModule({
-  declarations: [AppComponent, ExampleComponent, PlaylistsComponent, IgnoredComponent],
+  declarations: [AppComponent, ExampleComponent, PlaylistsComponent, IgnoredComponent, RecommendedComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

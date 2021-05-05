@@ -1,1 +1,4 @@
-<p>recommended works!</p>
+<h4 class=".mat-h4">Recommended</h4>
+<mat-list>
+    <mat-list-item *ngFor="let song of recommended$ | async">{{ song.title }}</mat-list-item>
+</mat-list>

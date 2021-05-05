@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 
 import example
 import mock_playlists
+import mock_recommended
 
 load_dotenv()
 
@@ -15,6 +16,7 @@ app = flask.Flask(__name__,
                   static_url_path='/client/')
 app.register_blueprint(example.blueprint)
 app.register_blueprint(mock_playlists.blueprint)
+app.register_blueprint(mock_recommended.blueprint)
 
 # If we're running in debug, defer to the typescript development server
 # This gets us things like live reload and better sourcemaps.

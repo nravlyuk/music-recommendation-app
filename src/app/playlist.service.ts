@@ -4,7 +4,7 @@ import {firstValueFrom, Observable, of, Subject} from 'rxjs';
 import {catchError, first, map, shareReplay, tap} from 'rxjs/operators';
 
 import {Playlist} from './interfaces/playlist';
-import {SessionRequest, SongAtPlaylist} from './interfaces/requests';
+import {SessionRequest} from './interfaces/request';
 import {Song} from './interfaces/song';
 
 @Injectable({providedIn: 'root'})
@@ -60,22 +60,5 @@ export class PlaylistService {
             .pipe(tap((response: Song[]) => {
               this.recommendedSubject.next(response);
             })));
-  }
-
-
-  deleteSong(sap: SongAtPlaylist): Observable<SongAtPlaylist>{
-    // TODO: Implement http request + error handling
-    return this.http.delete<SongAtPlaylist>(this.playlistsUrl, this.httpOptions)
-        .pipe(tap(_ => this._deleteSong(sap)))
-  }
-
-  _deleteSong(sap: SongAtPlaylist): void {
-    firstValueFrom(this.getPlaylists().pipe(tap((playlists: Playlist[]) => {
-      const pl_index: number =
-          playlists.findIndex(x => x.id === sap.playlist.id);
-      const s_index: number =
-          playlists[pl_index].songs.findIndex(x => x.id === sap.song.id);
-      playlists[pl_index].songs.splice(s_index, 1)
-    })))
   }
 }

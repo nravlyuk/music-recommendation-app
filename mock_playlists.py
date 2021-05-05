@@ -9,7 +9,7 @@ import requests
 blueprint = flask.Blueprint('mock_playlists', __name__, url_prefix="/api")
 
 
-@blueprint.route("/playlists", methods=['GET', 'DELETE'])
+@blueprint.route("/playlists")
 def mock():
     mock_playlists = {
         "playlists": [{

@@ -69,13 +69,25 @@ export class PlaylistService {
         .pipe(tap(_ => this._deleteSong(sap)))
   }
 
-  _deleteSong(sap: SongAtPlaylist): void {
+  _deleteSong(sap: SongAtPlaylist): void{firstValueFrom(
+      this.getPlaylists().pipe(tap((playlists: Playlist[]) => {
+        const pl_index: number =
+            playlists.findIndex(x => x.id === sap.playlist.id);
+        const s_index: number =
+            playlists[pl_index].songs.findIndex(x => x.id === sap.song.id);
+        playlists[pl_index].songs.splice(s_index, 1)
+      })))}
+
+  deletePlaylist(playlist: Playlist): Observable<Playlist>{
+    // TODO: Implement http request + error handling
+    return this.http.delete<Playlist>(this.playlistsUrl, this.httpOptions)
+        .pipe(tap(_ => this._deletePlaylist(playlist)))
+  }
+
+  _deletePlaylist(playlist: Playlist): void {
     firstValueFrom(this.getPlaylists().pipe(tap((playlists: Playlist[]) => {
-      const pl_index: number =
-          playlists.findIndex(x => x.id === sap.playlist.id);
-      const s_index: number =
-          playlists[pl_index].songs.findIndex(x => x.id === sap.song.id);
-      playlists[pl_index].songs.splice(s_index, 1)
+      const index: number = playlists.findIndex(x => x.id === playlist.id);
+      playlists.splice(index, 1)
     })))
   }
 }

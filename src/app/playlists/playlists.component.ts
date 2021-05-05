@@ -16,12 +16,16 @@ export class PlaylistsComponent implements OnInit {
   readonly playlists$: Observable<Playlist[]> =
       this.playlistService.getPlaylists();
 
+  deletePlaylistEvent = new Subject<Playlist>();
+  deletePlaylist$ = this.deletePlaylistEvent.asObservable();
   deleteSongEvent = new Subject<SongAtPlaylist>();
   deleteSong$ = this.deleteSongEvent.asObservable();
 
   constructor(private playlistService: PlaylistService) {
     this.deleteSong$.subscribe(
         sap => this.playlistService.deleteSong(sap).toPromise());
+    this.deletePlaylist$.subscribe(
+        playlist => this.playlistService.deletePlaylist(playlist).toPromise());
   }
 
   add(name: string): void {

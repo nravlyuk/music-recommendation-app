@@ -14,7 +14,6 @@ import {PlaylistService} from '../playlist.service';
 export class PlaylistsComponent implements OnInit {
   readonly playlists$: Observable<Playlist[]> =
       this.playlistService.getPlaylists();
-  // PLAYLISTS;
 
   constructor(private playlistService: PlaylistService) {}
 

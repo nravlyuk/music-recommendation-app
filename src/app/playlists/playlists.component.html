@@ -12,7 +12,13 @@
             </mat-expansion-panel-header>
             <mat-list style="margin-left:30px;">
                 <div *ngFor="let song of playlist.songs">
-                    <mat-list-item>{{ song.title }}</mat-list-item>
+                    <mat-list-item>{{ song.title }}
+                        <button mat-mini-fab color="basic" class="delete" title="delete song"
+                            (click)="deleteSongEvent.next({'playlist':playlist, 'song':song})" #tooltip="matTooltip"
+                            matTooltip="Delete a Song" matTooltipPosition="before" matTooltipHideDelay="100">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </mat-list-item>
                 </div>
             </mat-list>
         </mat-expansion-panel>

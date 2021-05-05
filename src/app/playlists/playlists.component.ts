@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {firstValueFrom, Observable} from 'rxjs';
+import {firstValueFrom, Observable, Subject} from 'rxjs';
 import {catchError, first, shareReplay, tap} from 'rxjs/operators';
 
 import {Playlist} from '../interfaces/playlist';
+import {SongAtPlaylist} from '../interfaces/requests';
 import {Song} from '../interfaces/song';
 import {PlaylistService} from '../playlist.service';
 
@@ -15,7 +16,13 @@ export class PlaylistsComponent implements OnInit {
   readonly playlists$: Observable<Playlist[]> =
       this.playlistService.getPlaylists();
 
-  constructor(private playlistService: PlaylistService) {}
+  deleteSongEvent = new Subject<SongAtPlaylist>();
+  deleteSong$ = this.deleteSongEvent.asObservable();
+
+  constructor(private playlistService: PlaylistService) {
+    this.deleteSong$.subscribe(
+        sap => this.playlistService.deleteSong(sap).toPromise());
+  }
 
   add(name: string): void {
     // TODO: Add playlist name verification
@@ -27,9 +34,6 @@ export class PlaylistsComponent implements OnInit {
     // TODO: Add 'delete a playlist' logic
   }
 
-  deleteSong(playlist: Playlist, song: Song): void {
-    // TODO: Add 'delete a song' logic
-  }
 
   ngOnInit(): void {}
 }

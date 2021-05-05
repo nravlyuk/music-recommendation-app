@@ -5,3 +5,8 @@ export interface SessionRequest {
   playlists: Playlist[];
   ignored: Song[];
 }
+
+export interface SongAtPlaylist {
+  playlist: Playlist;
+  song: Song;
+}

@@ -9,10 +9,13 @@ import {Song} from './interfaces/song';
 
 @Injectable({providedIn: 'root'})
 export class PlaylistService {
-  private playlistsUrl =
-      'http://localhost:5000/api/playlists';  // URL to web api
-  private recommendedUrl =
-      'http://localhost:5000/api/recommended';  // URL to web api
+  private PRODUCTION = false;
+  private domain = (this.PRODUCTION) ?
+      'https://striped-guard-312322.wl.r.appspot.com' :
+      'http://localhost:5000';
+  private playlistsUrl = this.domain + '/api/playlists';
+  private recommendedUrl = this.domain + '/api/recommended';
+  private ignoreUrl = this.domain + '/api/ignored';
   httpOptions = {
     headers: new HttpHeaders({'Content-Type': 'application/json'})
   };
@@ -84,10 +87,25 @@ export class PlaylistService {
         .pipe(tap(_ => this._deletePlaylist(playlist)))
   }
 
-  _deletePlaylist(playlist: Playlist): void {
-    firstValueFrom(this.getPlaylists().pipe(tap((playlists: Playlist[]) => {
-      const index: number = playlists.findIndex(x => x.id === playlist.id);
-      playlists.splice(index, 1)
-    })))
+  _deletePlaylist(playlist: Playlist): void{firstValueFrom(
+      this.getPlaylists().pipe(tap((playlists: Playlist[]) => {
+        const index: number = playlists.findIndex(x => x.id === playlist.id);
+        playlists.splice(index, 1)
+      })))}
+
+  ignoreSong(song: Song): Observable<Song>{
+    // TODO: Implement http request + error handling
+    return this.http.post<Song>(this.ignoreUrl, this.httpOptions)
+        .pipe(tap(_ => this._ignoreSong(song)))
+  }
+
+  _ignoreSong(song: Song): void {
+    firstValueFrom(this.getRecommended().pipe(tap((songs: Song[]) => {
+      const index: number = songs.findIndex(x => x.id === song.id);
+      songs.splice(index, 1)
+    })));
+    firstValueFrom(this.getIgnored().pipe(tap((songs: Song[]) => {
+      songs.push(song);
+    })));
   }
 }

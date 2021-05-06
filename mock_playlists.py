@@ -3,6 +3,7 @@ import time
 
 import flask
 from flask import jsonify
+from flask import request
 import logging
 import requests
 
@@ -75,3 +76,8 @@ def mock():
     }
 
     return jsonify(mock_playlists)
+
+
+@blueprint.route("/ignored", methods=['POST'])
+def ignore():
+    return request.get_json()

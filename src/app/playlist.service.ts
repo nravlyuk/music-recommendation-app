@@ -9,11 +9,13 @@ import {Song} from './interfaces/song';
 
 @Injectable({providedIn: 'root'})
 export class PlaylistService {
-  private playlistsUrl =
-      'http://localhost:5000/api/playlists';  // URL to web api
-  private recommendedUrl =
-      'http://localhost:5000/api/recommended';              // URL to web api
-  private ignoreUrl = 'http://localhost:5000/api/ignored';  // URL to web api
+  private PRODUCTION = false;
+  private domain = (this.PRODUCTION) ?
+      'https://striped-guard-312322.wl.r.appspot.com' :
+      'http://localhost:5000';
+  private playlistsUrl = this.domain + '/api/playlists';
+  private recommendedUrl = this.domain + '/api/recommended';
+  private ignoreUrl = this.domain + '/api/ignored';
   httpOptions = {
     headers: new HttpHeaders({'Content-Type': 'application/json'})
   };

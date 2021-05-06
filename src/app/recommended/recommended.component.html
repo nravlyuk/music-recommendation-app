@@ -1,4 +1,9 @@
 <h4 class=".mat-h4">Recommended</h4>
 <mat-list>
-    <mat-list-item *ngFor="let song of recommended$ | async">{{ song.title }}</mat-list-item>
+    <mat-list-item *ngFor="let song of recommended$ | async">{{ song.title }}
+        <button mat-mini-fab color="basic" class="delete" title="ignore song" (click)="ignoreSongEvent.next(song)"
+            #tooltip="matTooltip" matTooltip="Ignore a Song" matTooltipPosition="before" matTooltipHideDelay="100">
+            <mat-icon>delete</mat-icon>
+        </button>
+    </mat-list-item>
 </mat-list>

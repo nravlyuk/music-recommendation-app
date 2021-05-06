@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {firstValueFrom, Observable} from 'rxjs';
+import {firstValueFrom, Observable, Subject} from 'rxjs';
 import {catchError, first, shareReplay, tap} from 'rxjs/operators';
 
 import {Playlist} from '../interfaces/playlist';
@@ -14,7 +14,13 @@ import {PlaylistService} from '../playlist.service';
 export class RecommendedComponent implements OnInit {
   readonly recommended$: Observable<Song[]> =
       this.playlistService.getRecommended();
-  constructor(private playlistService: PlaylistService) {}
+
+  ignoreSongEvent = new Subject<Song>();
+  ignoreSong$ = this.ignoreSongEvent.asObservable();
+  constructor(private playlistService: PlaylistService) {
+    this.ignoreSong$.subscribe(
+        song => this.playlistService.ignoreSong(song).toPromise());
+  }
 
   ngOnInit(): void {}
 }

@@ -7,6 +7,7 @@ from db_service import PlaylistDB
 import mysql.connector
 import logging
 import requests
+from genius_config import get_access_token
 
 import mydb
 
@@ -50,7 +51,9 @@ def assert_playlists(playlists_json):
         }, {
             "id": 9,
             "title": "Song 12"
-        }]
+        }],
+        "access_token":
+        get_access_token()
     }
 
     return response

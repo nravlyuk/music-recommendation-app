@@ -12,7 +12,7 @@ import {PlaylistService} from '../playlist.service';
   styleUrls: ['./genius-search.component.css']
 })
 export class GeniusSearchComponent implements OnInit {
-  public geniusAutoComplete$: Observable<Hits> = null;
+  public geniusAutoComplete$: Observable<Hit[]> = null;
   public autoCompleteControl = new FormControl();
   constructor(private playlistService: PlaylistService) {}
 
@@ -35,5 +35,9 @@ export class GeniusSearchComponent implements OnInit {
             catchError(_ => {
               return of(null);
             }));
+  }
+
+  showSong(song) {
+    console.log(song)
   }
 }

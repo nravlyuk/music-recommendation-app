@@ -13,11 +13,12 @@ import {IgnoredComponent} from './ignored/ignored.component';
 import {MaterialModule} from './material/material.module';
 import {PlaylistsComponent} from './playlists/playlists.component';
 import {RecommendedComponent} from './recommended/recommended.component';
+import { SongPageComponent } from './song-page/song-page.component';
 
 @NgModule({
   declarations: [
     AppComponent, ExampleComponent, PlaylistsComponent, IgnoredComponent,
-    RecommendedComponent, GeniusSearchComponent
+    RecommendedComponent, GeniusSearchComponent, SongPageComponent
   ],
   imports: [
     BrowserModule,

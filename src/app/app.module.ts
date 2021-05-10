@@ -12,9 +12,10 @@ import { ExampleComponent } from './example/example.component';
 import { PlaylistsComponent } from './playlists/playlists.component';
 import { IgnoredComponent } from './ignored/ignored.component';
 import { RecommendedComponent } from './recommended/recommended.component';
+import { GeniusSearchComponent } from './genius-search/genius-search.component';
 
 @NgModule({
-  declarations: [AppComponent, ExampleComponent, PlaylistsComponent, IgnoredComponent, RecommendedComponent],
+  declarations: [AppComponent, ExampleComponent, PlaylistsComponent, IgnoredComponent, RecommendedComponent, GeniusSearchComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

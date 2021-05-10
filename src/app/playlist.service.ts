@@ -1,11 +1,9 @@
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpResponse} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {firstValueFrom, Observable, of, Subject} from 'rxjs';
 import {catchError, first, map, shareReplay, tap} from 'rxjs/operators';
 
-import {Playlist} from './interfaces/playlist';
-import {SessionRequest, SongAtPlaylist} from './interfaces/requests';
-import {Song} from './interfaces/song';
+import {GeniusResponse} from './interfaces/genius';
 
 @Injectable({providedIn: 'root'})
 export class PlaylistService {
@@ -17,6 +15,9 @@ export class PlaylistService {
   private recommendedUrl = this.domain + '/api/recommended';
   private ignoreUrl = this.domain + '/api/ignored';
   httpOptions = {
+    headers: new HttpHeaders({'Content-Type': 'application/json'})
+  };
+  httpOptionsCred = {
     headers: new HttpHeaders({'Content-Type': 'application/json'}),
     withCredentials: true
   };
@@ -27,6 +28,7 @@ export class PlaylistService {
   readonly playlistsReplay = this.playlistsSubject.pipe(shareReplay());
   readonly ignoredReplay = this.ignoredSubject.pipe(shareReplay());
   readonly recommendedReplay = this.recommendedSubject.pipe(shareReplay());
+  private accessToken: string = '';
   constructor(private http: HttpClient) {
     this.httpRequestPlaylists();
     this.playlistsReplay.subscribe(
@@ -54,6 +56,7 @@ export class PlaylistService {
             .pipe(tap((response: SessionRequest) => {
               this.playlistsSubject.next(response['playlists']);
               this.ignoredSubject.next(response['ignored']);
+              this.accessToken = response['access_token'];
             })));
   }
 
@@ -70,7 +73,8 @@ export class PlaylistService {
 
   deleteSong(sap: SongAtPlaylist): Observable<SongAtPlaylist>{
     // TODO: Implement http request + error handling
-    return this.http.delete<SongAtPlaylist>(this.playlistsUrl, this.httpOptions)
+    return this.http
+        .delete<SongAtPlaylist>(this.playlistsUrl, this.httpOptionsCred)
         .pipe(tap(_ => this._deleteSong(sap)))
   }
 
@@ -85,7 +89,7 @@ export class PlaylistService {
 
   deletePlaylist(playlist: Playlist): Observable<Playlist>{
     // TODO: Implement http request + error handling
-    return this.http.delete<Playlist>(this.playlistsUrl, this.httpOptions)
+    return this.http.delete<Playlist>(this.playlistsUrl, this.httpOptionsCred)
         .pipe(tap(_ => this._deletePlaylist(playlist)))
   }
 
@@ -110,4 +114,23 @@ export class PlaylistService {
       songs.push(song);
     })));
   }
+
+  searchGenius(query: string): Observable<GeniusResponse> {
+    const geniusHttpOptions = {
+      // TODO: play with headers
+      // headers: new HttpHeaders({
+      //  'Authorization': 'Bearer ' + this.accessToken
+      //}),
+      params: {q: query, access_token: this.accessToken}
+    };
+    const url = 'https://api.genius.com/search';
+    return this.http.get<GeniusResponse>(url, geniusHttpOptions)
+        .pipe(map(res => {
+          console.log(res);
+          return res;
+        }));
+  }
 }
+import {Playlist} from './interfaces/playlist';
+import {SessionRequest, SongAtPlaylist} from './interfaces/requests';
+import {Song} from './interfaces/song';

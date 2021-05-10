@@ -4,6 +4,7 @@ import {Song} from './song';
 export interface SessionRequest {
   playlists: Playlist[];
   ignored: Song[];
+  access_token: string;
 }
 
 export interface SongAtPlaylist {

@@ -17,7 +17,8 @@ export class PlaylistService {
   private recommendedUrl = this.domain + '/api/recommended';
   private ignoreUrl = this.domain + '/api/ignored';
   httpOptions = {
-    headers: new HttpHeaders({'Content-Type': 'application/json'})
+    headers: new HttpHeaders({'Content-Type': 'application/json'}),
+    withCredentials: true
   };
 
   private playlistsSubject = new Subject<Playlist[]>();
@@ -47,12 +48,13 @@ export class PlaylistService {
   private async httpRequestPlaylists() {
     // TODO: Implement http request + error handling
 
-    await firstValueFrom(this.http.get<SessionRequest>(this.playlistsUrl)
-                             .pipe(tap((response: SessionRequest) => {
-                               this.playlistsSubject.next(
-                                   response['playlists']);
-                               this.ignoredSubject.next(response['ignored']);
-                             })));
+    await firstValueFrom(
+        this.http
+            .get<SessionRequest>(this.playlistsUrl, {withCredentials: true})
+            .pipe(tap((response: SessionRequest) => {
+              this.playlistsSubject.next(response['playlists']);
+              this.ignoredSubject.next(response['ignored']);
+            })));
   }
 
   private async httpRequestRecommended(playlists: Playlist[]) {

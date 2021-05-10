@@ -7,7 +7,6 @@ from dotenv import load_dotenv
 import example
 import mock_playlists
 import mock_recommended
-#import genius_api
 from db_service import PlaylistDB
 import uuid
 
@@ -40,19 +39,6 @@ else:
 app.secret_key = os.urandom(24)
 
 
-# Set a cookie.
-@app.route('/cookie/')
-def cookie():
-    res = flask.make_response("Setting a cookie")
-    cookie = flask.request.cookies.get('userID')
-    print(cookie)
-    if not cookie:
-        res.set_cookie('userID',
-                       uuid.uuid4().hex,
-                       max_age=60 * 60 * 24 * 365 * 2)
-    return res
-
-
 # A catch-all route to serve the angular app.
 # If no other routes match (such as /example) this will be called, and the
 # angular app will take over routing.
@@ -74,7 +60,6 @@ def serve_angular(path):
     cookie_id = flask.request.cookies.get('userID')
     if not cookie_id:
         cookie_id = uuid.uuid4().hex
-        #res = flask.redirect('api/genius')
         if not PlaylistDB().add_user(cookie_id):
             flask.abort(401, description="DB is unreachable")
     else:

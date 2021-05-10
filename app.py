@@ -7,6 +7,8 @@ from dotenv import load_dotenv
 import example
 import mock_playlists
 import mock_recommended
+from db_service import PlaylistDB
+import uuid
 
 load_dotenv()
 
@@ -17,6 +19,7 @@ app = flask.Flask(__name__,
 app.register_blueprint(example.blueprint)
 app.register_blueprint(mock_playlists.blueprint)
 app.register_blueprint(mock_recommended.blueprint)
+#app.register_blueprint(genius_api.blueprint)
 
 # If we're running in debug, defer to the typescript development server
 # This gets us things like live reload and better sourcemaps.
@@ -48,5 +51,21 @@ def serve_angular(path):
             app.static_url_path.strip('/'),
             path.lstrip('/')
         ])
-        return flask.redirect(target)
-    return flask.send_file('dist/client/index.html')
+
+        res = flask.redirect(target)
+
+    else:
+        res = flask.send_file('dist/client/index.html')
+
+    cookie_id = flask.request.cookies.get('userID')
+    if not cookie_id:
+        cookie_id = uuid.uuid4().hex
+        if not PlaylistDB().add_user(cookie_id):
+            flask.abort(401, description="DB is unreachable")
+    else:
+        if not PlaylistDB().check_user(cookie_id):
+            flask.abort(401, description="Error in user checking")
+    res.set_cookie('userID', cookie_id, max_age=60 * 60 * 24 * 365 * 2)
+    flask.session['userID'] = cookie_id
+
+    return res

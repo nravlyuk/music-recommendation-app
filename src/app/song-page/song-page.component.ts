@@ -27,6 +27,8 @@ export class SongPageComponent implements OnInit {
     this.playlistService.addSong(sap);
   }
   ignore(song: JSON): void {
-    // TODO: Ignore song logic. Add context menu of playlist selection
+    // TODO: delete from recommended
+    const songObj: Song = {id: song['id'], title: song['full_title']};
+    this.playlistService.ignoreSong(songObj);
   }
 }

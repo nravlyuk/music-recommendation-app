@@ -24,7 +24,7 @@ class PlaylistDB:
         mydb = self.playlists_db_remote_connection()
         mycursor = mydb.cursor()
         try:
-            mycursor.execute("Insert INTO user(userId) values(%s)",
+            mycursor.execute("Insert INTO user(userId) values(%s)s",
                              (user_id, ))
             mydb.commit()
         except:
@@ -37,7 +37,7 @@ class PlaylistDB:
         mydb = self.playlists_db_remote_connection()
         mycursor = mydb.cursor()
         try:
-            mycursor.execute("SELECT userId FROM user WHERE userId = %s",
+            mycursor.execute("SELECT userId FROM user WHERE userId = %s;",
                              (user_id, ))
         except:
             mycursor.close()
@@ -68,3 +68,105 @@ class PlaylistDB:
         if len(myresult):
             return myresult
         return False
+
+    def add_playlist(self, playlist):
+        mydb = self.playlists_db_remote_connection()
+        mycursor = mydb.cursor()
+        playlist_id, user_id, name, description = playlist
+        try:
+            mycursor.execute(
+                "INSERT INTO playlist (playlistId, userId, name, description)\
+                VALUES (%s, %s, %s, %s);",
+                (playlist_id, user_id, name, description))
+            mydb.commit()
+        except:
+            mycursor.close()
+            return False
+        mycursor.close()
+        return True
+
+    def delete_playlist(self, playlist_id):
+        mydb = self.playlists_db_remote_connection()
+        mycursor = mydb.cursor()
+        try:
+            mycursor.execute("DELETE FROM playlist WHERE playlistId = %s;",
+                             (playlist_id, ))
+            mydb.commit()
+        except:
+            mycursor.close()
+            return False
+        mycursor.close()
+        return True
+
+    def find_song(self, song_id):  # Maybe redundant
+        mydb = self.playlists_db_remote_connection()
+        mycursor = mydb.cursor()
+        try:
+            mycursor.execute("SELECT * FROM song WHERE songId = %s;",
+                             (song_id, ))
+            mydb.commit()
+        except:
+            mycursor.close()
+            return False
+        myresult = custom_json(mycursor)
+        mycursor.close()
+        if len(myresult):  #TODO: Test this
+            return True
+        return False
+
+    def add_song(self, song):  # Possibly redundant
+        mydb = self.playlists_db_remote_connection()
+        mycursor = mydb.cursor()
+        song_id, title = song
+        try:
+            mycursor.execute(
+                "INSERT INTO song (songId, title)\
+                VALUES (%s, %s);", (song_id, title))
+            mydb.commit()
+        except:
+            mycursor.close()
+            return False
+        mycursor.close()
+        return True
+
+    def delete_song(self, song_id):  # Possibly redundant
+        mydb = self.playlists_db_remote_connection()
+        mycursor = mydb.cursor()
+        try:
+            mycursor.execute(
+                "DELETE FROM song WHERE \
+                songId = %s;", (song_id, ))
+            mydb.commit()
+        except:
+            mycursor.close()
+            return False
+        mycursor.close()
+        return True
+
+    def add_song_to_playlist(self, playlist_id, song_id):
+        mydb = self.playlists_db_remote_connection()
+        mycursor = mydb.cursor()
+        try:
+            mycursor.execute(
+                "INSERT INTO playlist_song (playlistId, songId)\
+          VALUES (%s, %s);", (playlist_id, song_id))
+            mydb.commit()
+        except:
+            mycursor.close()
+            return False
+        mycursor.close()
+        return True
+
+    def delete_song_from_playlist(self, playlist_id, song_id):
+        mydb = self.playlists_db_remote_connection()
+        mycursor = mydb.cursor()
+        try:
+            mycursor.execute(
+                "DELETE FROM playlist_song WHERE\
+          playlistId = %s AND songId = %s;", (playlist_id, song_id))
+            mydb.commit()
+        except:
+            mycursor.close()
+            return False
+        mycursor.close()
+        return True

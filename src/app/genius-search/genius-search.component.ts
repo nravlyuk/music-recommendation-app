@@ -38,6 +38,6 @@ export class GeniusSearchComponent implements OnInit {
   }
 
   showSong(song) {
-    console.log(song)
+    this.playlistService.showSong(song);
   }
 }

@@ -25,7 +25,7 @@ def assert_playlists(playlists_json):
     for item in playlists_json:
         if item['playlistId'] not in playlists:
             playlists[item['playlistId']] = {
-                'playlistId': item['playlistId'],
+                'id': item['playlistId'],
                 'name': item['name'],
                 'songs': []
             }

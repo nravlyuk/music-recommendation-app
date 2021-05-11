@@ -1,9 +1,12 @@
 import {HttpClient, HttpHeaders, HttpResponse} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {firstValueFrom, Observable, of, Subject} from 'rxjs';
-import {catchError, first, map, shareReplay, tap} from 'rxjs/operators';
+import {catchError, first, map, shareReplay, switchMap, tap} from 'rxjs/operators';
 
 import {GeniusResponse} from './interfaces/genius';
+import {Playlist} from './interfaces/playlist';
+import {SessionRequest, SongAtPlaylist} from './interfaces/requests';
+import {Song} from './interfaces/song';
 
 @Injectable({providedIn: 'root'})
 export class PlaylistService {
@@ -25,9 +28,11 @@ export class PlaylistService {
   private playlistsSubject = new Subject<Playlist[]>();
   private ignoredSubject = new Subject<Song[]>();
   private recommendedSubject = new Subject<Song[]>();
+  private songSubject = new Subject<JSON>();
   readonly playlistsReplay = this.playlistsSubject.pipe(shareReplay());
   readonly ignoredReplay = this.ignoredSubject.pipe(shareReplay());
   readonly recommendedReplay = this.recommendedSubject.pipe(shareReplay());
+  readonly songReplay = this.songSubject.pipe(shareReplay());
   private accessToken: string = '';
   constructor(private http: HttpClient) {
     this.httpRequestPlaylists();
@@ -45,6 +50,10 @@ export class PlaylistService {
 
   getRecommended(): Observable<Song[]> {
     return this.recommendedReplay;
+  }
+
+  getSong(): Observable<JSON> {
+    return this.songReplay;
   }
 
   private async httpRequestPlaylists() {
@@ -99,7 +108,7 @@ export class PlaylistService {
         playlists.splice(index, 1)
       })))}
 
-  ignoreSong(song: Song): Observable<Song>{
+  ignoreSong(song: Song) {
     // TODO: Implement http request + error handling
     return this.http.post<Song>(this.ignoreUrl, this.httpOptions)
         .pipe(tap(_ => this._ignoreSong(song)))
@@ -112,6 +121,24 @@ export class PlaylistService {
     })));
     firstValueFrom(this.getIgnored().pipe(tap((songs: Song[]) => {
       songs.push(song);
+    })));
+  }
+
+  async addSong(sap: SongAtPlaylist) {
+    // TODO: Implement http request + error handling
+    // TODO: Check if song is in a playlist already
+    await firstValueFrom(
+        this.http.post<Song>(this.ignoreUrl, this.httpOptionsCred)
+            .pipe(tap(_ => {
+              this._addSong(sap);
+            })));
+  }
+
+  _addSong(sap: SongAtPlaylist): void {
+    firstValueFrom(this.getPlaylists().pipe(tap((playlists: Playlist[]) => {
+      console.log(sap);
+      const index: number = playlists.findIndex(x => x.id === sap.playlist.id);
+      playlists[index].songs.push(sap.song);
     })));
   }
 
@@ -130,7 +157,23 @@ export class PlaylistService {
           return res;
         }));
   }
+
+
+  showSong(song: JSON): void {
+    // TODO: Make an HTTP request for a specific song
+    this.songSubject.next(song);
+    // this.searchGeniusSong(song['id']).pipe(tap((value: JSON) => {
+    //  this.songSubject.next(value);
+    //}));
+  }
+
+  searchGeniusSong(id: number): Observable<JSON> {
+    const geniusHttpOptions = {params: {access_token: this.accessToken}};
+    const url = 'https://api.genius.com/songs/' + id;
+    return this.http.get<GeniusResponse>(url, geniusHttpOptions)
+        .pipe(map((res: GeniusResponse) => {
+          console.log(res);
+          return res.response.hits[0].result;
+        }));
+  }
 }
-import {Playlist} from './interfaces/playlist';
-import {SessionRequest, SongAtPlaylist} from './interfaces/requests';
-import {Song} from './interfaces/song';

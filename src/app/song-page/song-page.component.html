@@ -1,1 +1,15 @@
-<p>song-page works!</p>
+<div *ngIf="song$ | async as song">
+    <mat-card>
+        <button mat-raised-button [matMenuTriggerFor]="menu">Add to playlist</button>
+        <mat-menu #menu="matMenu">
+            <button mat-menu-item *ngFor="let playlist of playlists$ | async"
+                (click)="addToPlaylist(song, playlist)">{{playlist.name}}</button>
+        </mat-menu>
+        <button mat-raised-button (click)="ignore(song)">Ignore</button>
+        <mat-card-header>
+            <mat-card-title>{{song.title}}</mat-card-title>
+            <mat-card-subtitle>{{song.primary_artist.name}}</mat-card-subtitle>
+        </mat-card-header>
+        <img mat-card-image src='{{song.header_image_url}}' alt="Album Image">
+    </mat-card>
+</div>

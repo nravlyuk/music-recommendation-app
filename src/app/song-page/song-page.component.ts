@@ -1,4 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {firstValueFrom, Observable, observable, of, Subject} from 'rxjs';
+
+import {Playlist} from '../interfaces/playlist';
+import {SongAtPlaylist} from '../interfaces/requests';
+import {Song} from '../interfaces/song';
+import {PlaylistService} from '../playlist.service';
 
 @Component({
   selector: 'app-song-page',
@@ -6,10 +12,21 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./song-page.component.css']
 })
 export class SongPageComponent implements OnInit {
+  readonly song$: Observable<JSON> = this.playlistService.getSong();
 
-  constructor() { }
+  readonly playlists$: Observable<Playlist[]> =
+      this.playlistService.getPlaylists();
 
-  ngOnInit(): void {
+  constructor(private playlistService: PlaylistService) {}
+
+  ngOnInit(): void {}
+
+  addToPlaylist(song: JSON, playlist: Playlist): void {
+    const songObj: Song = {id: song['id'], title: song['full_title']};
+    const sap: SongAtPlaylist = {song: songObj, playlist: playlist};
+    this.playlistService.addSong(sap);
   }
-
+  ignore(song: JSON): void {
+    // TODO: Ignore song logic. Add context menu of playlist selection
+  }
 }

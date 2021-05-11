@@ -4,6 +4,7 @@
     <mat-autocomplete #auto="matAutocomplete">
         <mat-option *ngFor="let option of geniusAutoComplete$ | async" [value]="option.result.full_title"
             (onSelectionChange)='showSong(option.result)'>
+            <!--<img src='{{option.result.header_image_thumbnail_url}}' alt="Album Image" height="15">-->
             {{option.result.full_title}}
         </mat-option>
     </mat-autocomplete>

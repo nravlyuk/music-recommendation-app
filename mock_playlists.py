@@ -73,15 +73,14 @@ def mock():
 
     # Create a playlist
     if request.method == "POST":
+        playlist = request.get_json()
         pass
 
     # Delete a playlist
     if request.method == "DELETE":
         pass
 
-    myresult = PlaylistDB().find_playlists(userid)
-
-    return jsonify(assert_playlists(myresult))
+    return jsonify({})
 
 
 @blueprint.route("/ignored", methods=['POST'])

@@ -83,7 +83,7 @@ export class PlaylistService {
   deleteSong(sap: SongAtPlaylist): Observable<SongAtPlaylist>{
     // TODO: Implement http request + error handling
     return this.http
-        .delete<SongAtPlaylist>(this.playlistsUrl, this.httpOptionsCred)
+        .delete<SongAtPlaylist>(this.playlistsUrl, {withCredentials: true})
         .pipe(tap(_ => this._deleteSong(sap)))
   }
 
@@ -98,7 +98,8 @@ export class PlaylistService {
 
   deletePlaylist(playlist: Playlist): Observable<Playlist>{
     // TODO: Implement http request + error handling
-    return this.http.delete<Playlist>(this.playlistsUrl, this.httpOptionsCred)
+    return this.http
+        .delete<Playlist>(this.playlistsUrl, {withCredentials: true})
         .pipe(tap(_ => this._deletePlaylist(playlist)))
   }
 

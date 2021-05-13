@@ -6,8 +6,16 @@
 </ul>
 <router-outlet></router-outlet>
 -->
-<app-genius-search></app-genius-search>
-<app-playlists></app-playlists>
-<app-recommended></app-recommended>
-<app-ignored></app-ignored>
-<app-song-page></app-song-page>
+<div fxLayout="row" fxLayoutAlign="center start">
+    <div fxLayout="column" fxLayoutAlign="space-around center">
+        <app-genius-search></app-genius-search>
+        <div fxLayout="row" fxLayoutAlign="center start" fxLayoutGap="5vw">
+            <app-playlists></app-playlists>
+            <div fxLayout="column" fxLayoutGap="5vh">
+                <app-recommended></app-recommended>
+                <app-ignored></app-ignored>
+            </div>
+        </div>
+    </div>
+    <app-song-page></app-song-page>
+</div>

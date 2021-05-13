@@ -1,6 +1,5 @@
-<div *ngIf="song$ | async as song">
-    <mat-card>
-
+<div *ngIf="song$ | async as song" [@slideInOut]>
+    <mat-card style="width: 400px">
         <mat-card-header>
             <mat-card-title>{{song.title}}</mat-card-title>
             <mat-card-subtitle>{{song.primary_artist.name}}</mat-card-subtitle>
@@ -11,6 +10,7 @@
                 (click)="addToPlaylist(song, playlist)">{{playlist.name}}</button>
         </mat-menu>
         <button mat-raised-button (click)="ignore(song)">Ignore</button>
+        <button class="close" mat-button (click)="closePage()">X</button>
         <img mat-card-image src='{{song.header_image_url}}' alt="Album Image">
     </mat-card>
 </div>

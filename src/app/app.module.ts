@@ -15,12 +15,11 @@ import {MaterialModule} from './material/material.module';
 import {PlaylistsComponent} from './playlists/playlists.component';
 import {RecommendedComponent} from './recommended/recommended.component';
 import {SongPageComponent} from './song-page/song-page.component';
-import { AddPlaylistComponent } from './add-playlist/add-playlist.component';
 
 @NgModule({
   declarations: [
     AppComponent, ExampleComponent, PlaylistsComponent, IgnoredComponent,
-    RecommendedComponent, GeniusSearchComponent, SongPageComponent, AddPlaylistComponent
+    RecommendedComponent, GeniusSearchComponent, SongPageComponent
   ],
   imports: [
     BrowserModule,

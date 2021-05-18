@@ -48,10 +48,6 @@ export class PlaylistsComponent implements OnInit {
     this.opened = false;
   }
 
-  deletePlaylist(playlist: Playlist): void {
-    // TODO: Add 'delete a playlist' logic
-  }
-
 
   ngOnInit(): void {}
 

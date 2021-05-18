@@ -33,7 +33,7 @@ class PlaylistDB:
         mydb = self.playlists_db_remote_connection()
         mycursor = mydb.cursor()
         try:
-            mycursor.execute("Insert INTO user(userId) values(%s)s",
+            mycursor.execute("Insert INTO user(user_id) values(%s);",
                              (user_id, ))
             mydb.commit()
         except:
@@ -46,7 +46,7 @@ class PlaylistDB:
         mydb = self.playlists_db_remote_connection()
         mycursor = mydb.cursor()
         try:
-            mycursor.execute("SELECT userId FROM user WHERE userId = %s;",
+            mycursor.execute("SELECT user_id FROM user WHERE user_id = %s;",
                              (user_id, ))
         except:
             mycursor.close()
@@ -62,13 +62,13 @@ class PlaylistDB:
         mycursor = mydb.cursor()
         try:
             mycursor.execute(
-                "SELECT playlist.playlistId, playlist.name, playlist.description, song.songId, song.title\
+                "SELECT playlist.playlist_id, playlist.name, playlist.description, song.song_id, song.full_title\
                   FROM playlist\
                   LEFT JOIN playlist_song\
-                    ON playlist.playlistId = playlist_song.playlistId\
+                    ON playlist.playlist_id = playlist_song.playlist_id\
                   LEFT JOIN song\
-                    ON song.songId = playlist_song.songId\
-                  WHERE playlist.userId = %s;", (user_id, ))
+                    ON song.song_id = playlist_song.song_id\
+                  WHERE playlist.user_id = %s;", (user_id, ))
         except:
             mycursor.close()
             return False
@@ -84,7 +84,7 @@ class PlaylistDB:
         name, description = playlist["name"], playlist["description"]
         try:
             mycursor.execute(
-                "INSERT INTO playlist (playlistId, userId, name, description)\
+                "INSERT INTO playlist (playlist_id, user_id, name, description)\
                 VALUES (%s, %s, %s, %s);",
                 (playlist_id, user_id, name, description))
             mydb.commit()
@@ -101,8 +101,8 @@ class PlaylistDB:
         try:
             mycursor.execute(
                 "DELETE FROM playlist\
-                  WHERE playlistId = %s\
-                  AND userId = %s;", (playlist_id, user_id))
+                  WHERE playlist_id = %s\
+                  AND user_id = %s;", (playlist_id, user_id))
             mydb.commit()
         except:
             mycursor.close()
@@ -114,7 +114,7 @@ class PlaylistDB:
         mydb = self.playlists_db_remote_connection()
         mycursor = mydb.cursor()
         try:
-            mycursor.execute("SELECT * FROM song WHERE songId = %s;",
+            mycursor.execute("SELECT * FROM song WHERE song_id = %s;",
                              (song_id, ))
             mydb.commit()
         except:
@@ -129,11 +129,14 @@ class PlaylistDB:
     def add_song(self, song):  # Possibly redundant
         mydb = self.playlists_db_remote_connection()
         mycursor = mydb.cursor()
-        song_id, title = song
+        song_id, full_title, title, primary_artist_name, header_image_url = song["id"],\
+            song["full_title"], song["title"], song["primary_artist_name"], song["header_image_url"]
         try:
             mycursor.execute(
-                "INSERT INTO song (songId, title)\
-                VALUES (%s, %s);", (song_id, title))
+                "INSERT IGNORE INTO song (song_id, title, full_title, primary_artist_name, header_image_url)\
+                VALUES (%s, %s, %s, %s, %s);",
+                (song_id, title, full_title, primary_artist_name,
+                 header_image_url))
             mydb.commit()
         except:
             mycursor.close()
@@ -147,7 +150,7 @@ class PlaylistDB:
         try:
             mycursor.execute(
                 "DELETE FROM song WHERE \
-                songId = %s;", (song_id, ))
+                song_id = %s;", (song_id, ))
             mydb.commit()
         except:
             mycursor.close()
@@ -160,7 +163,7 @@ class PlaylistDB:
         mycursor = mydb.cursor()
         try:
             mycursor.execute(
-                "INSERT INTO playlist_song (playlistId, songId)\
+                "INSERT INTO playlist_song (playlist_id, song_id)\
           VALUES (%s, %s);", (playlist_id, song_id))
             mydb.commit()
         except:
@@ -175,7 +178,7 @@ class PlaylistDB:
         try:
             mycursor.execute(
                 "DELETE FROM playlist_song WHERE\
-          playlistId = %s AND songId = %s;", (playlist_id, song_id))
+          playlist_id = %s AND song_id = %s;", (playlist_id, song_id))
             mydb.commit()
         except:
             mycursor.close()

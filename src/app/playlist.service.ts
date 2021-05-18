@@ -16,7 +16,9 @@ export class PlaylistService {
       'http://localhost:5000';
   private playlistsUrl = this.domain + '/api/playlists/';
   private recommendedUrl = this.domain + '/api/recommended';
+  private songUrl = this.domain + '/api/playlists/song';
   private ignoreUrl = this.domain + '/api/playlists/ignored';
+  private removeSongUrl = this.domain + '/api/playlists/remove';
   httpOptions = {
     headers: new HttpHeaders({'Content-Type': 'application/json'})
   };
@@ -84,7 +86,7 @@ export class PlaylistService {
   deleteSong(sap: SongAtPlaylist): Observable<SongAtPlaylist>{
     // TODO: Implement http request + error handling
     return this.http
-        .delete<SongAtPlaylist>(this.playlistsUrl, {withCredentials: true})
+        .post<SongAtPlaylist>(this.removeSongUrl, sap, this.httpOptionsCred)
         .pipe(tap(_ => this._deleteSong(sap)))
   }
 
@@ -140,14 +142,14 @@ export class PlaylistService {
     })));
   }
 
-  async addSong(sap: SongAtPlaylist) {
+  addSong(sap: SongAtPlaylist): Observable<SongAtPlaylist> {
     // TODO: Implement http request + error handling
     // TODO: Check if song is in a playlist already
-    await firstValueFrom(
-        this.http.post<Song>(this.ignoreUrl, this.httpOptionsCred)
-            .pipe(tap(_ => {
-              this._addSong(sap);
-            })));
+    return this.http
+        .post<SongAtPlaylist>(this.songUrl, sap, this.httpOptionsCred)
+        .pipe(tap(_ => {
+          this._addSong(sap);
+        }));
   }
 
   _addSong(sap: SongAtPlaylist): void {

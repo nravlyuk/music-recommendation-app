@@ -27,19 +27,19 @@ def custom_json(mycursor):
 def assert_playlists(playlists_json):
     playlists = dict()
     for item in playlists_json:
-        if item['playlistId'] not in playlists:
-            playlists[item['playlistId']] = {
-                'id': item['playlistId'],
+        if item['playlist_id'] not in playlists:
+            playlists[item['playlist_id']] = {
+                'id': item['playlist_id'],
                 'name': item['name'],
                 'description': item['description'],
                 'songs': []
             }
-        if item['songId'] is not None:
-            playlists[item['playlistId']]['songs'].append({
+        if item['song_id'] is not None:
+            playlists[item['playlist_id']]['songs'].append({
                 'id':
-                item['songId'],
-                'title':
-                item['title']
+                item['song_id'],
+                'full_title':
+                item['full_title']
             })
 
     playlists_arr = list(playlists.values())
@@ -74,6 +74,8 @@ def mock(path):
 
     if request.method == "GET":
         myresult = PlaylistDB().find_playlists(userid)
+        if not myresult:
+            return jsonify({})
 
         return jsonify(assert_playlists(myresult))
 
@@ -104,3 +106,24 @@ def mock(path):
 @blueprint.route("/ignored", methods=['POST'])
 def ignore():
     return request.get_json()
+
+
+@blueprint.route("/song", methods=['POST'])
+def add_song_to_playlist():
+    song_at_playlist = list(request.form.keys())[0]
+    song_at_playlist = json.loads(song_at_playlist)
+    PlaylistDB().add_song(song_at_playlist["song"])
+    playlist_id = song_at_playlist["playlist"]["id"]
+    song_id = song_at_playlist["song"]["id"]
+    my_result = PlaylistDB().add_song_to_playlist(playlist_id, song_id)
+    return {}
+
+
+@blueprint.route("/remove", methods=['POST'])
+def remove_song_from_playlist():
+    song_at_playlist = list(request.form.keys())[0]
+    song_at_playlist = json.loads(song_at_playlist)
+    playlist_id = song_at_playlist["playlist"]["id"]
+    song_id = song_at_playlist["song"]["id"]
+    my_result = PlaylistDB().delete_song_from_playlist(playlist_id, song_id)
+    return {}

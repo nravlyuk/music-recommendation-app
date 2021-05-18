@@ -28,18 +28,36 @@ export class SongPageComponent implements OnInit {
   readonly playlists$: Observable<Playlist[]> =
       this.playlistService.getPlaylists();
 
-  constructor(private playlistService: PlaylistService) {}
+  addSongEvent = new Subject<SongAtPlaylist>();
+  addSong$ = this.addSongEvent.asObservable();
+
+  constructor(private playlistService: PlaylistService) {
+    this.addSong$.subscribe(
+        sap => this.playlistService.addSong(sap).toPromise());
+  }
 
   ngOnInit(): void {}
 
   addToPlaylist(song: JSON, playlist: Playlist): void {
-    const songObj: Song = {id: song['id'], title: song['full_title']};
+    const songObj: Song = {
+      id: song['id'],
+      full_title: song['full_title'],
+      title: song['title'],
+      primary_artist_name: song['primary_artist']['name'],
+      header_image_url: song['header_image_url']
+    };
     const sap: SongAtPlaylist = {song: songObj, playlist: playlist};
-    this.playlistService.addSong(sap);
+    this.addSongEvent.next(sap);
   }
   ignore(song: JSON): void {
     // TODO: delete from recommended
-    const songObj: Song = {id: song['id'], title: song['full_title']};
+    const songObj: Song = {
+      id: song['id'],
+      full_title: song['full_title'],
+      title: song['title'],
+      primary_artist_name: song['primary_artist']['name'],
+      header_image_url: song['header_image_url']
+    };
     this.playlistService.ignoreSong(songObj);
   }
 

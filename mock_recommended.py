@@ -12,6 +12,7 @@ blueprint = flask.Blueprint('mock_recommended', __name__, url_prefix="/api")
 
 @blueprint.route("/recommended", methods=['POST'])
 def mock():
+    return jsonify([])
     # Return all the songs in playlists back
     content = request.get_json()
     songs = []

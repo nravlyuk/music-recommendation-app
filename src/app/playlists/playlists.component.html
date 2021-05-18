@@ -1,31 +1,61 @@
-<h4 class=".mat-h4">Playlists</h4>
-<mat-list>
-    <ng-container *ngFor="let playlist of playlists$ | async">
-        <mat-expansion-panel [expanded]="true">
-            <mat-expansion-panel-header>
-                <mat-panel-title>
-                    <mat-list-item>{{playlist.name}}</mat-list-item>
-                </mat-panel-title>
-                <mat-panel-description>
-                    {{playlist.description}}
-                </mat-panel-description>
-                <button mat-mini-fab color="basic" class="delete" title="delete playlist"
-                    (click)="deletePlaylistEvent.next(playlist)" #tooltip="matTooltip" matTooltip="Delete a Playlist"
-                    matTooltipPosition="before" matTooltipHideDelay="100">
-                    <mat-icon>delete</mat-icon>
-                </button>
-            </mat-expansion-panel-header>
-            <mat-list style="margin-left:30px;">
-                <div *ngFor="let song of playlist.songs">
-                    <mat-list-item>{{ song.title }}
-                        <button mat-mini-fab color="basic" class="delete" title="delete song"
-                            (click)="deleteSongEvent.next({'playlist':playlist, 'song':song})" #tooltip="matTooltip"
-                            matTooltip="Delete a Song" matTooltipPosition="before" matTooltipHideDelay="100">
+<mat-sidenav-container>
+    <mat-sidenav #sidenav [(opened)]="opened">
+        <mat-toolbar color="primary">
+            <mat-toolbar-row>
+                <span>Add a playlist</span>
+                <span class="spacer"></span>
+                <button class="right" mat-icon-button (click)="sidenav.toggle()">X</button>
+            </mat-toolbar-row>
+        </mat-toolbar>
+        <mat-form-field>
+            <mat-label>Playlist name</mat-label>
+            <input type="text" placeholder="Ex. My favorite songs" [formControl]="playlistNameControl" matInput
+                #playlistName required>
+            <mat-error *ngIf="playlistNameControl.invalid">{{getErrorMessage()}}</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Playlist description</mat-label>
+            <textarea matInput placeholder="Ex. Best songs ever!" #playlistDescription></textarea>
+        </mat-form-field>
+        <button mat-raised-button #tooltip="matTooltip" matTooltip="Add a new Playlist" matTooltipPosition="below"
+            matTooltipHideDelay="100" color="primary" class="add-button"
+            (click)="addPlaylist(playlistName.value, playlistDescription.value); playlistName.value=''; playlistDescription.value = '';">
+            Add Playlist
+        </button>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <h4 class=".mat-h4">Playlists</h4>
+        <mat-list>
+            <ng-container *ngFor="let playlist of playlists$ | async">
+                <mat-expansion-panel [expanded]="true">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            <mat-list-item>{{playlist.name}}</mat-list-item>
+                        </mat-panel-title>
+                        <mat-panel-description>
+                            {{playlist.description}}
+                        </mat-panel-description>
+                        <button mat-mini-fab color="basic" class="delete" title="delete playlist"
+                            (click)="deletePlaylistEvent.next(playlist)" #tooltip="matTooltip"
+                            matTooltip="Delete a Playlist" matTooltipPosition="before" matTooltipHideDelay="100">
                             <mat-icon>delete</mat-icon>
                         </button>
-                    </mat-list-item>
-                </div>
-            </mat-list>
-        </mat-expansion-panel>
-    </ng-container>
-</mat-list>
+                    </mat-expansion-panel-header>
+                    <mat-list style="margin-left:30px;">
+                        <div *ngFor="let song of playlist.songs">
+                            <mat-list-item>{{ song.title }}
+                                <button mat-mini-fab color="basic" class="delete" title="delete song"
+                                    (click)="deleteSongEvent.next({'playlist':playlist, 'song':song})"
+                                    #tooltip="matTooltip" matTooltip="Delete a Song" matTooltipPosition="before"
+                                    matTooltipHideDelay="100">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </mat-list-item>
+                        </div>
+                    </mat-list>
+                </mat-expansion-panel>
+            </ng-container>
+        </mat-list>
+        <button mat-raised-button (click)="sidenav.toggle()">Add a Playlist</button>
+    </mat-sidenav-content>
+</mat-sidenav-container>

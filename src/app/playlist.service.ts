@@ -14,14 +14,15 @@ export class PlaylistService {
   private domain = (this.PRODUCTION) ?
       'https://striped-guard-312322.wl.r.appspot.com' :
       'http://localhost:5000';
-  private playlistsUrl = this.domain + '/api/playlists';
+  private playlistsUrl = this.domain + '/api/playlists/';
   private recommendedUrl = this.domain + '/api/recommended';
-  private ignoreUrl = this.domain + '/api/ignored';
+  private ignoreUrl = this.domain + '/api/playlists/ignored';
   httpOptions = {
     headers: new HttpHeaders({'Content-Type': 'application/json'})
   };
   httpOptionsCred = {
-    headers: new HttpHeaders({'Content-Type': 'application/json'}),
+    headers:
+        new HttpHeaders({'Content-Type': 'application/x-www-form-urlencoded'}),
     withCredentials: true
   };
 
@@ -96,10 +97,24 @@ export class PlaylistService {
         playlists[pl_index].songs.splice(s_index, 1)
       })))}
 
+  addPlaylist(playlist: Playlist): Observable<Playlist>{
+    // TODO: Implement http request + error handling
+    return this.http
+        .post<Playlist>(this.playlistsUrl, playlist, this.httpOptionsCred)
+        .pipe(tap((playlist: Playlist) => this._addPlaylist(playlist)))
+  }
+
+  _addPlaylist(playlist: Playlist): void{firstValueFrom(
+      this.getPlaylists().pipe(tap((playlists: Playlist[]) => {
+        playlists.push(playlist);
+      })))}
+
+
   deletePlaylist(playlist: Playlist): Observable<Playlist>{
     // TODO: Implement http request + error handling
     return this.http
-        .delete<Playlist>(this.playlistsUrl, {withCredentials: true})
+        .delete<Playlist>(
+            this.playlistsUrl + playlist.id, {withCredentials: true})
         .pipe(tap(_ => this._deletePlaylist(playlist)))
   }
 

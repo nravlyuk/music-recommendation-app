@@ -8,10 +8,14 @@ import mysql.connector
 import logging
 import requests
 from genius_config import get_access_token
+import uuid
+import json
 
 import mydb
 
-blueprint = flask.Blueprint('mock_playlists', __name__, url_prefix="/api")
+blueprint = flask.Blueprint('mock_playlists',
+                            __name__,
+                            url_prefix="/api/playlists")
 
 
 def custom_json(mycursor):
@@ -27,6 +31,7 @@ def assert_playlists(playlists_json):
             playlists[item['playlistId']] = {
                 'id': item['playlistId'],
                 'name': item['name'],
+                'description': item['description'],
                 'songs': []
             }
         if item['songId'] is not None:
@@ -59,8 +64,9 @@ def assert_playlists(playlists_json):
     return response
 
 
-@blueprint.route("/playlists", methods=['GET', 'POST', 'DELETE'])
-def mock():
+@blueprint.route("/", defaults={'path': ''}, methods=['GET', 'POST', 'DELETE'])
+@blueprint.route('/<path:path>', methods=['DELETE'])
+def mock(path):
     if 'userID' in flask.session:
         userid = flask.session['userID']
     else:
@@ -73,14 +79,26 @@ def mock():
 
     # Create a playlist
     if request.method == "POST":
-        playlist = request.get_json()
-        pass
+        playlist = list(request.form.keys())[0]
+        playlist = json.loads(playlist)
+        playlist_id = uuid.uuid4().hex
+        myresult = PlaylistDB().add_playlist(playlist, userid, playlist_id)
+        if myresult:
+            return jsonify(myresult)
+        abort(400, description="Couldn't add a playlist")
 
-    # Delete a playlist
     if request.method == "DELETE":
-        pass
+        playlist_id = path
+        if 'userID' in flask.session:
+            userid = flask.session['userID']
+        else:
+            abort(401, description="Missing Cookie")
 
-    return jsonify({})
+        # Delete a playlist
+        myresult = PlaylistDB().delete_playlist(userid, playlist_id)
+        if myresult:
+            return jsonify(myresult)
+        abort(400, description="Couldn't delete a playlist")
 
 
 @blueprint.route("/ignored", methods=['POST'])

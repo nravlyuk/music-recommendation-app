@@ -1,11 +1,11 @@
 /* You can add global styles to this file, and also import other style files */
-@import "@angular/material/prebuilt-themes/pink-bluegrey.css";
 
-html,
-body {
+@import "@angular/material/prebuilt-themes/pink-bluegrey.css";
+html, body {
   margin: 10px;
   height: calc(100% - 20px);
 }
+
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
@@ -18,4 +18,8 @@ mat-spinner {
 
 mat-card {
   margin-bottom: 15px;
+}
+
+.spacer {
+  flex: 1 1 auto;
 }

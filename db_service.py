@@ -11,6 +11,15 @@ def custom_json(mycursor):
     return r
 
 
+def playlist_json(playlist_id, name, description='', songs=[]):
+    return {
+        "id": playlist_id,
+        "name": name,
+        "description": description,
+        "songs": songs
+    }
+
+
 class PlaylistDB:
     def playlists_db_remote_connection(self):
         username, password, host, database = db_config.get_config()
@@ -69,10 +78,10 @@ class PlaylistDB:
             return myresult
         return False
 
-    def add_playlist(self, playlist):
+    def add_playlist(self, playlist, user_id, playlist_id):
         mydb = self.playlists_db_remote_connection()
         mycursor = mydb.cursor()
-        playlist_id, user_id, name, description = playlist
+        name, description = playlist["name"], playlist["description"]
         try:
             mycursor.execute(
                 "INSERT INTO playlist (playlistId, userId, name, description)\
@@ -83,14 +92,17 @@ class PlaylistDB:
             mycursor.close()
             return False
         mycursor.close()
-        return True
+        return playlist_json(playlist_id, name, description)
 
-    def delete_playlist(self, playlist_id):
+    def delete_playlist(self, user_id, playlist_id):
         mydb = self.playlists_db_remote_connection()
         mycursor = mydb.cursor()
+
         try:
-            mycursor.execute("DELETE FROM playlist WHERE playlistId = %s;",
-                             (playlist_id, ))
+            mycursor.execute(
+                "DELETE FROM playlist\
+                  WHERE playlistId = %s\
+                  AND userId = %s;", (playlist_id, user_id))
             mydb.commit()
         except:
             mycursor.close()

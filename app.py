@@ -5,6 +5,7 @@ import flask_cors
 from dotenv import load_dotenv
 
 import example
+import mock_playlists
 
 load_dotenv()
 
@@ -13,6 +14,7 @@ app = flask.Flask(__name__,
                   static_folder='dist/client',
                   static_url_path='/client/')
 app.register_blueprint(example.blueprint)
+app.register_blueprint(mock_playlists.blueprint)
 
 # If we're running in debug, defer to the typescript development server
 # This gets us things like live reload and better sourcemaps.

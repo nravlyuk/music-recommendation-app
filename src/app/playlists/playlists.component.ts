@@ -11,26 +11,9 @@ import {PlaylistService} from '../playlist.service';
   templateUrl: './playlists.component.html',
   styleUrls: ['./playlists.component.css']
 })
-export class PlaylistsComponent implements OnInit {
+export class PlaylistsComponent {
   readonly playlists$: Observable<Playlist[]> =
       this.playlistService.getPlaylists();
-  // PLAYLISTS;
 
   constructor(private playlistService: PlaylistService) {}
-
-  add(name: string): void {
-    // TODO: Add playlist name verification
-
-    // TODO: Add 'adding a playlist' logic
-  }
-
-  deletePlaylist(playlist: Playlist): void {
-    // TODO: Add 'delete a playlist' logic
-  }
-
-  deleteSong(playlist: Playlist, song: Song): void {
-    // TODO: Add 'delete a song' logic
-  }
-
-  ngOnInit(): void {}
 }

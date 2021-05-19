@@ -27,11 +27,9 @@ export class PlaylistService {
   private async httpRequestPlaylists() {
     // TODO: Implement http request + error handling
 
-    await firstValueFrom(this.http.get<Playlist[]>(this.playlistsUrl)
-                             .pipe(
-                                 tap(playlists => {
-                                   this.playlistsSubject.next(playlists);
-                                 }),
-                                 ));
+    await firstValueFrom(
+        this.http.get<Playlist[]>(this.playlistsUrl).pipe(tap(playlists => {
+          this.playlistsSubject.next(playlists);
+        })));
   }
 }

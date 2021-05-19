@@ -6,8 +6,8 @@ import {PlaylistsComponent} from './playlists/playlists.component'
 
 const routes: Routes = [
   {path: 'example/', component: ExampleComponent},
-  {path: 'playlists/', component: PlaylistsComponent},
-  {path: '**', redirectTo: 'playlists/'},
+  {path: 'playlists', component: PlaylistsComponent},
+  {path: '**', redirectTo: 'playlists'},
 ];
 
 @NgModule({

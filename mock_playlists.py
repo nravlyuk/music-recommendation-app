@@ -6,59 +6,46 @@ from flask import jsonify
 import logging
 import requests
 
-blueprint = flask.Blueprint('mock_playlists', __name__, url_prefix="/api")
+blueprint = flask.Blueprint('mock_playlists',
+                            __name__,
+                            url_prefix="/api/playlists")
 
 
-@blueprint.route("/playlists")
+@blueprint.route("/")
 def mock():
     mock_playlists = [{
         "id":
         11,
         "name":
-        "Playlist 1",
+        "Kendrick Lamar Playlist",
         "description":
-        "This is a playlist 1 description",
+        "This playlist consists of Kendrick Lamar songs",
         "songs": [{
-            "id": 1,
-            "title": "Song 1"
+            "id": 3039923,
+            "title": "HUMBLE. by Kendrick Lamar"
         }, {
-            "id": 2,
-            "title": "Song 2"
+            "id": 90478,
+            "title": "​m.A.A.d city by Kendrick Lamar (Ft. MC Eiht)"
         }, {
-            "id": 3,
-            "title": "Song 3"
+            "id": 81159,
+            "title": "Swimming Pools (Drank) by Kendrick Lamar"
         }]
     }, {
         "id":
         12,
         "name":
-        "Playlist 2",
+        "Adele",
         "description":
-        "Playlist 3 has no description",
+        "Best Adele songs",
         "songs": [{
-            "id": 4,
-            "title": "Song 4"
+            "id": 2332455,
+            "title": "Hello by Adele"
         }, {
-            "id": 5,
-            "title": "Song 5"
+            "id": 51294,
+            "title": "Someone Like You by Adele"
         }, {
-            "id": 6,
-            "title": "Song 6"
-        }]
-    }, {
-        "id":
-        13,
-        "name":
-        "Playlist 3",
-        "songs": [{
-            "id": 7,
-            "title": "Song 7"
-        }, {
-            "id": 8,
-            "title": "Song 8"
-        }, {
-            "id": 9,
-            "title": "Song 9"
+            "id": 2336628,
+            "title": "When We Were Young by Adele"
         }]
     }]
 

@@ -1,5 +1,14 @@
 import {animate, style, transition, trigger} from '@angular/animations';
+import {Component, OnInit} from '@angular/core';
+import {firstValueFrom, Observable, observable, of, Subject} from 'rxjs';
 import {catchError, debounceTime, map, mergeMap, mergeMapTo, shareReplay, startWith, switchMap} from 'rxjs/operators';
+
+import {Playlist} from '../interfaces/playlist';
+import {SongAtPlaylist} from '../interfaces/requests';
+import {Song} from '../interfaces/song';
+import {PlaylistService} from '../playlist.service';
+import {SongPageService} from '../song-page.service';
+
 
 @Component({
   selector: 'app-song-page',
@@ -22,16 +31,15 @@ import {catchError, debounceTime, map, mergeMap, mergeMapTo, shareReplay, startW
 export class SongPageComponent implements OnInit {
   readonly song$: Observable<JSON> = this.playlistService.getSong();
 
-  private visible = new Subject<boolean>();
-  readonly visible$ = this.visible.pipe(shareReplay());
-
   readonly playlists$: Observable<Playlist[]> =
       this.playlistService.getPlaylists();
 
   addSongEvent = new Subject<SongAtPlaylist>();
   addSong$ = this.addSongEvent.asObservable();
 
-  constructor(private playlistService: PlaylistService) {
+  constructor(
+      private playlistService: PlaylistService,
+      private songPageService: SongPageService) {
     this.addSong$.subscribe(
         sap => this.playlistService.addSong(sap).toPromise());
   }
@@ -62,13 +70,6 @@ export class SongPageComponent implements OnInit {
   }
 
   closePage(): void {
-    this.visible.next(false);
+    this.songPageService.closePageEvent();
   }
 }
-import {Component, OnInit} from '@angular/core';
-import {firstValueFrom, Observable, observable, of, Subject} from 'rxjs';
-
-import {Playlist} from '../interfaces/playlist';
-import {SongAtPlaylist} from '../interfaces/requests';
-import {Song} from '../interfaces/song';
-import {PlaylistService} from '../playlist.service';

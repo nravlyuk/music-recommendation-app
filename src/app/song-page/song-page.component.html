@@ -1,16 +1,19 @@
 <div *ngIf="song$ | async as song" [@slideInOut]>
-    <mat-card style="width: 400px">
-        <mat-card-header>
-            <mat-card-title>{{song.title}}</mat-card-title>
-            <mat-card-subtitle>{{song.primary_artist.name}}</mat-card-subtitle>
-        </mat-card-header>
-        <button mat-raised-button [matMenuTriggerFor]="menu">Add to playlist</button>
-        <mat-menu #menu="matMenu">
-            <button mat-menu-item *ngFor="let playlist of playlists$ | async"
-                (click)="addToPlaylist(song, playlist)">{{playlist.name}}</button>
-        </mat-menu>
-        <button mat-raised-button (click)="ignore(song)">Ignore</button>
-        <button class="close" mat-button (click)="closePage()">X</button>
-        <img mat-card-image src='{{song.header_image_url}}' alt="Album Image">
-    </mat-card>
+    <mat-toolbar color="primary">
+        <mat-toolbar-row>
+            <div>
+                <span>{{song.title}}</span> &nbsp;
+                <mat-card-subtitle>{{song.primary_artist.name}}</mat-card-subtitle>
+            </div>
+            <span class="spacer"></span>
+            <button color="primary" mat-raised-button [matMenuTriggerFor]="menu">Add to playlist</button>
+            <mat-menu #menu="matMenu">
+                <button mat-menu-item *ngFor="let playlist of playlists$ | async"
+                    (click)="addToPlaylist(song, playlist)">{{playlist.name}}</button>
+            </mat-menu>
+            <button color="primary" mat-raised-button (click)="ignore(song)">Ignore</button>
+            <button mat-icon-button (click)="closePage()">X</button>
+        </mat-toolbar-row>
+    </mat-toolbar>
+    <img mat-card-image src='{{song.header_image_url}}' alt="Album Image">
 </div>

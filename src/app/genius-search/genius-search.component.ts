@@ -5,6 +5,8 @@ import {catchError, debounceTime, map, mergeMap, mergeMapTo, startWith, switchMa
 
 import {GeniusResponse, Hit, Hits} from '../interfaces/genius';
 import {PlaylistService} from '../playlist.service';
+import {SongPageService} from '../song-page.service';
+
 
 @Component({
   selector: 'app-genius-search',
@@ -14,7 +16,9 @@ import {PlaylistService} from '../playlist.service';
 export class GeniusSearchComponent implements OnInit {
   public geniusAutoComplete$: Observable<Hit[]> = null;
   public autoCompleteControl = new FormControl();
-  constructor(private playlistService: PlaylistService) {}
+  constructor(
+      private playlistService: PlaylistService,
+      private songPageService: SongPageService) {}
 
   ngOnInit(): void {
     this.geniusAutoComplete$ = this.autoCompleteControl.valueChanges.pipe(
@@ -38,6 +42,7 @@ export class GeniusSearchComponent implements OnInit {
   }
 
   showSong(song) {
+    this.songPageService.openPageEvent();
     this.playlistService.showSong(song);
   }
 }

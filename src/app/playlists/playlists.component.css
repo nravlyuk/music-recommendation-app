@@ -1,0 +1,11 @@
+:host {
+    width: 35vw;
+}
+
+.mat-form-field {
+    width: 90%;
+}
+
+.empty-container {
+    height: 500px;
+}
